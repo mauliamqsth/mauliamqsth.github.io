@@ -11,7 +11,7 @@ function inputDigit(digit) {
         calculator.displayValue = digit;
         calculator.waitingForSecondOperand = false;
     } else {
-        calculator.displayValue = displayValue === '0' ?digit : displayValue + digit;
+        calculator.displayValue = displayValue === '0' ? digit : displayValue + digit;
     }
 }
 
@@ -21,7 +21,7 @@ function inputDecimal(dot) {
         calculator.waitingForSecondOperand = false;
         return
     }
-    if (!calculator.displayValue.includes(dot)) {
+    if (!calculator.displayValue.includes(dot)){
         calculator.displayValue += dot;
     }
 }
@@ -33,13 +33,13 @@ function handleOperator(nextOperator) {
         calculator.operator = nextOperator;
         return;
     }
-    if (firstOperand == null && !isNaN(inputValue)) {
+    if(firstOperand == null && !isNaN(inputValue)) {
         calculator.firstOperand = inputValue;
     } else if (operator) {
         const result = calculate(firstOperand, inputValue, operator);
         calculator.displayValue = `${parseFloat(result.toFixed(7))}`;
         calculator.firstOperand = result;
-    }
+    } 
     calculator.waitingForSecondOperand = true;
     calculator.operator = nextOperator;
 }
@@ -53,48 +53,70 @@ function calculate(firstOperand, secondOperand, operator) {
         return firstOperand * secondOperand;
     } else if (operator === '/') {
         return firstOperand / secondOperand;
+    } else if (operator === '**') {
+        return firstOperand ** secondOperand;
     }
-    return secondOperand;
+        return secondOperand;
 }
 
-function resetCalculator() {
+function sin(){
+    calculator.displayValue = Math.sin(calculator.displayValue);
+}
+
+function cos(){
+    calculator.displayValue = Math.cos(calculator.displayValue);
+}
+
+function tan(){
+    calculator.displayValue = Math.tan(calculator.displayValue);
+}
+
+function resetCalculator(){
     calculator.displayValue = '0';
     calculator.firstOperand = null;
     calculator.waitingForSecondOperand = false;
     calculator.operator = null;
 }
 
-function updateDisplay() {
+function updateDisplay(){
     const display = document.querySelector('.calculator-screen');
     display.value = calculator.displayValue;
 }
-
 updateDisplay();
 const keys = document.querySelector('.calculator-keys');
-keys.addEventListener('click', Event => {
-    const { target } = Event;
+keys.addEventListener('click' , event => {
+    const { target } = event;
     const { value } = target;
-    if (! target.matches('button')) {
-        return;
-    }
-    switch (value) {
-        case '+' :
-            case '-' :
-                case '*' :
-                    case '/' :
-                        case '=' :
-                            handleOperator(value);
-                            break;
-                            case '.' :
-                                inputDecimal(value);
-                                break;
-                                case 'all-clear' :
-                                    resetCalculator();
-                                    break;
-                                    default:
-                                        if (Number.isInteger(parseFloat(value))) {
-                                            inputDigit(value);
-                                        }
-    }
-    updateDisplay();
+if (!target.matches('button')){
+    return;
+}
+switch (value) {
+    case '+':
+    case '-':
+    case '*':
+    case '/':
+    case '**':
+    case '=':
+handleOperator(value);
+break;
+    case 'sin':
+sin(value);
+break;
+    case 'tan':
+tan(value);
+break;
+    case 'cos':
+cos(value);
+break;
+case '.':
+    inputDecimal(value);
+break;
+case 'all-clear' : resetCalculator();
+break;
+default :
+if (Number.isInteger(parseFloat(value))) {
+    inputDigit(value);
+}
+}
+updateDisplay();
 });
